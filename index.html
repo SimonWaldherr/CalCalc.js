@@ -10,7 +10,11 @@
       cal.insertThisWeek();
       cal.appendDay(42);
       cal.prependDay(42);
+      window.scrollTo(0, 100);
       cal.calcalcinit();
+      cal.addEventListener('calcalc', function(e) {
+        console.log(cal.getAttribute('data-newdate'));
+      }, false);
     }
   </script>
 </head>

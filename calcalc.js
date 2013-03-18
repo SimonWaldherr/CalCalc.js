@@ -64,6 +64,7 @@ Object.prototype.appendDay = function (quantity) {
     }
     this.appendChild(newdiv);
   }
+  return date;
 };
 
 Object.prototype.prependDay = function (quantity) {
@@ -90,29 +91,43 @@ Object.prototype.prependDay = function (quantity) {
       this.insertBefore(linebreak,this.firstChild);
     }
   }
+  return date;
 };
 
 var reloadOnScroll = function (ele) {
   "use strict";
   var yPos = (document.documentElement) ? Math.max(document.body.scrollTop, document.documentElement.scrollTop) : document.body.scrollTop,
       height = (document.documentElement) ? Math.max(document.body.clientHeight, document.documentElement.clientHeight) : document.body.clientHeight,
-      oldHeight;
-  if(yPos < 200) {
+      oldHeight, date = false;
+  if(yPos < window.innerHeight/2) {
     oldHeight = height;
-    ele.prependDay(56);
+    date = ele.prependDay(28);
     height = (document.documentElement) ? Math.max(document.body.clientHeight, document.documentElement.clientHeight) : document.body.clientHeight;
     window.scrollBy(0, height - oldHeight);
+    return date;
   }
-  if(yPos > height - window.innerHeight - 200) {
-    ele.appendDay(56);
+  if(yPos > height - window.innerHeight - window.innerHeight/2) {
+    date = ele.appendDay(28);
+    return date;
   }
+  return false;
 };
 
 Object.prototype.calcalcinit = function () {
   "use strict";
   var ele = this;
   window.onscroll = function () {
-    reloadOnScroll(ele);
+    var event = document.createEvent('Event'),
+    returnvalue = false;
+    
+    returnvalue = reloadOnScroll(ele);
+    
+    if(returnvalue !== false) {
+      ele.setAttribute('data-newdate', returnvalue);
+      event.initEvent('calcalc',false,false);
+      event.target = ele;
+      ele.dispatchEvent(event);
+    }
   };
 };
 
@@ -121,14 +136,14 @@ var curve = function (x) {
   return (x < 0.5) ? (4*x*x*x) : (1 - 4*(1-x)*(1-x)*(1-x));
 };
 
-var scrollAnimation = function (targetY, startY, startTime) {
+var scrollAnimation = function (targetY, startY, startTime, speed) {
   "use strict";
-  var percent = (new Date() - startTime) / 1000;
+  var percent = (new Date() - startTime) / 1000*speed;
   if(percent > 1) {
     window.scrollTo(0, targetY);
   } else {
     window.scrollTo(0, Math.round(startY + (targetY - startY) * curve(percent)));
-    setTimeout(scrollAnimation, 10, targetY, startY, startTime);
+    setTimeout(scrollAnimation, 10, targetY, startY, startTime, speed);
   }
 };
 
@@ -136,7 +151,7 @@ var scrollToDay = function (element) {
   "use strict";
   var clientHeight = element.clientHeight,
       y = element.offsetTop,
-      targetY, startY, startTime;
+      targetY, startY, startTime, startDist;
   while(element.offsetParent && element.offsetParent !== document.body) {
     element = element.offsetParent;
     y += element.offsetTop;
@@ -145,6 +160,13 @@ var scrollToDay = function (element) {
   startY = (document.documentElement) ? Math.max(document.body.scrollTop, document.documentElement.scrollTop) : document.body.scrollTop;
   startTime = new Date();
   if(targetY !== startY) {
-    setTimeout(scrollAnimation, 10, targetY, startY, startTime);
+    startDist = Math.max(targetY, startY)-Math.min(targetY, startY);
+    if(startDist > 512) {
+      setTimeout(scrollAnimation, 10, targetY, startY, startTime, 2);
+    } else if(startDist > 256) {
+      setTimeout(scrollAnimation, 6, targetY, startY, startTime, 6);
+    } else if(startDist > 64) {
+      setTimeout(scrollAnimation, 4, targetY, startY, startTime, 12);
+    }
   }
 };
