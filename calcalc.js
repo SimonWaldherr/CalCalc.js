@@ -1,6 +1,6 @@
 /* * * * * * * * *
  *  CalCalc .js  *
- * Version  0.05 *
+ * Version  0.06 *
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
@@ -42,7 +42,7 @@ Object.prototype.insertThisWeek = function () {
 
 Object.prototype.appendDay = function (quantity) {
   "use strict";
-  var lastday   = (this.lastChild.hasAttribute('data-datestr')) ? this.lastChild.getAttribute('data-datestr').split('.') : this.lastChild.previousElementSibling.getAttribute('data-datestr').split('.'),
+  var target, lastday   = (this.lastChild.hasAttribute('data-datestr')) ? this.lastChild.getAttribute('data-datestr').split('.') : this.lastChild.previousElementSibling.getAttribute('data-datestr').split('.'),
       i         = 0,
       event = document.createEvent('Event'),
       returnvalue = false,
@@ -66,17 +66,23 @@ Object.prototype.appendDay = function (quantity) {
     }
     this.appendChild(newdiv);
   }
-  
   this.setAttribute('data-newdate', date);
-  event.initEvent('calcalc',false,false);
-  event.target = this;
-  this.dispatchEvent(event);
+  if(!event) { 
+     event.initEvent('calcalc',false,false);
+     event.target = this;
+     this.dispatchEvent(event);
+  } else {
+      event.initEvent('calcalc',false,false);
+      target = event.srcElement || event.target;
+      target = this;
+      this.dispatchEvent(event);
+  }
   return date;
 };
 
 Object.prototype.prependDay = function (quantity) {
   "use strict";
-  var firstday   = (this.firstChild.hasAttribute('data-datestr')) ? this.firstChild.getAttribute('data-datestr').split('.') : this.firstChild.nextElementSibling.getAttribute('data-datestr').split('.'),
+  var target, firstday   = (this.firstChild.hasAttribute('data-datestr')) ? this.firstChild.getAttribute('data-datestr').split('.') : this.firstChild.nextElementSibling.getAttribute('data-datestr').split('.'),
       i         = 0,
       event = document.createEvent('Event'),
       returnvalue = false,
@@ -100,11 +106,17 @@ Object.prototype.prependDay = function (quantity) {
       this.insertBefore(linebreak,this.firstChild);
     }
   }
-  
   this.setAttribute('data-newdate', date);
-  event.initEvent('calcalc',false,false);
-  event.target = this;
-  this.dispatchEvent(event);
+  if(!event) { 
+     event.initEvent('calcalc',false,false);
+     event.target = this;
+     this.dispatchEvent(event);
+  } else {
+      event.initEvent('calcalc',false,false);
+      target = event.srcElement || event.target;
+      target = this;
+      this.dispatchEvent(event);
+  }
   return date;
 };
 
@@ -132,7 +144,7 @@ var reloadOnScroll = function (ele) {
 
 Object.prototype.calcalcinit = function () {
   "use strict";
-  var ele = this;
+  var target, ele = this;
   window.onscroll = function () {
     var event = document.createEvent('Event'),
     returnvalue = false;
@@ -141,9 +153,16 @@ Object.prototype.calcalcinit = function () {
     
     if(returnvalue !== false) {
       ele.setAttribute('data-newdate', returnvalue);
-      event.initEvent('calcalc',false,false);
-      event.target = ele;
-      ele.dispatchEvent(event);
+      if(!event) { 
+         event.initEvent('calcalc',false,false);
+         event.target = ele;
+         ele.dispatchEvent(event);
+      } else {
+          event.initEvent('calcalc',false,false);
+          target = event.srcElement || event.target;
+          target = ele;
+          ele.dispatchEvent(event);
+      }
     }
   };
 };
