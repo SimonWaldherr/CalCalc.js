@@ -7,16 +7,10 @@
   <script src="calcalc.js" type="text/javascript"></script>
   <script>
     function init() {
-      var test = document.getElementById('test');
-      var d = new Date();
-      var date1 = d.getTime().TStoDate();
-      var date2 = '1363559790332'.TStoDate();
-      //test.innerHTML = date1[0]+'.'+date1[1]+'.'+date1[2];
-      //test.innerHTML += "<br/>"+date2[0]+'.'+date2[1]+'.'+date2[2];
-      
-      document.getElementById('cal').insertToday();
-      document.getElementById('cal').appendDay(91);
-      document.getElementById('cal').prependDay(31);
+      var cal = document.getElementById('cal');
+      cal.insertThisWeek();
+      cal.appendDay(21);
+      cal.prependDay(28);
     }
   </script>
 </head>

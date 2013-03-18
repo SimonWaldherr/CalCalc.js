@@ -35,10 +35,24 @@ Element.prototype.insertToday = function () {
       oddweek  = date.getTime().getWeekNumber()%2,
       oddmonth = date.getMonth()%2;
       
-  this.innerHTML = '<div data-datestr="'+datestr+'" class="calcalcday oddweek'+oddweek+' oddmonth'+oddmonth+'" id="'+date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()+'"><span>'+date.getDate()+'</span></div>';
+  this.innerHTML = '<div data-datestr="'+datestr+'" class="calcalcday today day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth+'" id="'+date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()+'"><span>'+date.getDate()+'</span></div>';
+}
+
+Element.prototype.insertThisWeek = function () {
+  var date     = new Date(),
+      datestr  = date.getFullYear()+'.'+date.getMonth()+'.'+date.getDate(),
+      oddweek  = date.getTime().getWeekNumber()%2,
+      oddmonth = date.getMonth()%2;
+  //console.log(date.getDay());
+  this.insertToday();
+  this.prependDay(date.getDay());
+  this.appendDay(6-date.getDay());
+
+  //this.innerHTML = '<div data-datestr="'+datestr+'" class="calcalcday day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth+'" id="'+date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()+'"><span>'+date.getDate()+'</span></div>';
 }
 
 Element.prototype.appendDay = function (quantity) {
+  console.log(quantity);
   var container = this,
       lastchild = this.lastChild,
       lastday   = this.lastChild.getAttribute('data-datestr').split('.'),
@@ -58,19 +72,16 @@ Element.prototype.appendDay = function (quantity) {
     oddmonth  = date.getMonth()%2;
     newdiv = document.createElement('div')
     newdiv.setAttribute('data-datestr', datestr);
-    newdiv.className = 'calcalcday oddweek'+oddweek+' oddmonth'+oddmonth;
+    newdiv.className = 'calcalcday day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth;
     newdiv.id = date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear();
     newdiv.innerHTML = '<span>'+date.getDate()+'</span>';
     
     this.appendChild(newdiv);
   }
-  
-  
-  
-  //this.innerHTML = '<div data-datestr="'+datestr+'" class="oddweek'+oddweek+' oddmonth'+oddmonth+'" id="'+date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()+'"><span>'+date.getDate()+'</span></div>';
 }
 
 Element.prototype.prependDay = function (quantity) {
+  console.log(quantity);
   var container = this,
       lastchild = this.firstChild,
       lastday   = this.firstChild.getAttribute('data-datestr').split('.'),
@@ -91,13 +102,11 @@ Element.prototype.prependDay = function (quantity) {
     oddmonth  = date.getMonth()%2;
     newdiv = document.createElement('div')
     newdiv.setAttribute('data-datestr', datestr);
-    newdiv.className = 'calcalcday oddweek'+oddweek+' oddmonth'+oddmonth;
+    newdiv.className = 'calcalcday day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth;
     newdiv.id = date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear();
     newdiv.innerHTML = '<span>'+date.getDate()+'</span>';
 
     this.insertBefore(newdiv,this.firstChild);
-    //this.appendChild(newdiv);
-    //this.appendChild(newdiv,this.firstChild);
   }
 }
 

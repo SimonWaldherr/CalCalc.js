@@ -6,7 +6,7 @@
  * * * * * * * * */
 
 #cal {
-  width: 840px;
+  width: 980px;
   margin: auto;
 }
 
@@ -22,17 +22,10 @@
   display: inline-block;
 }
 
-/*
-.oddweek1.oddmonth1 {
-  background: #ffe;
-}*/
-
 .oddmonth1 {
   background: #eff;
 }
 
-.oddweek1 {
-  /*background: #ffe;
-  box-shadow: inset 0px 0px 25px 0px #000000;
-  -webkit-box-shadow: inset 0px 0px 25px 0px #000000;*/
+.today {
+  background: #ffe;
 }
