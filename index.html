@@ -8,9 +8,10 @@
     var visible = [];
     function visibleMonth(ele, date) {
       var i = 0, month, year, datestr, newdate, first, dateint, scrollbox = '',
+      monthstr = (date.getMonth() < 10) ? '0'+date.getMonth() : date.getMonth();
       monthstrarray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
       
-      dateint = parseInt(date.getFullYear().toString()+date.getMonth().toString(),10);
+      dateint = parseInt(date.getFullYear().toString()+monthstr,10);
       
       newdate = document.createElement('p');
       newdate.className = 'scrollmonth';
