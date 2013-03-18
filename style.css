@@ -1,6 +1,6 @@
 /* * * * * * * * *
  *  CalCalc .js  *
- * Version  0.04 *
+ * Version  0.05 *
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
@@ -50,7 +50,25 @@
   background: #ffe;
 }
 
-/*
-.day6 {
-  display: table-column;
-}*/
+#scrollbox {
+  height: auto;
+  width: 160px;
+  position: fixed;
+  top: 42px;
+  left: 0px;
+  background: #ccc;
+  overflow-y: scroll;
+  bottom: 0px;
+}
+
+.scrollmonth {
+  margin: 10px;
+  padding-left: 5px;
+}
+
+#scrollbox p:first-child {
+  visibility: hidden;
+}
+#scrollbox p:last-child {
+  visibility: hidden;
+}

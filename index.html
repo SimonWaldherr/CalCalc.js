@@ -1,26 +1,56 @@
-<html>
+<!DOCTYPE html><html>
 <head>
   <meta charset="utf-8">
   <title>CalCalc.js</title>
   <link href="style.css" rel="stylesheet" type="text/css">
   <script src="calcalc.js" type="text/javascript"></script>
   <script>
+    var visible = [];
+    function visibleMonth(ele, date) {
+      var i = 0, month, year, datestr, newdate, first, dateint, scrollbox = '',
+      monthstrarray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      dateint = parseInt(date.getFullYear().toString()+date.getMonth().toString(),10);
+      
+      newdate = document.createElement('p');
+      newdate.className = 'scrollmonth';
+      newdate.onclick = function() {scrollToDay(document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()));};
+      newdate.innerHTML = monthstrarray[date.getMonth()]+'. '+date.getFullYear();
+      
+      if(visible[0] > dateint){
+        visible.unshift(dateint);
+        ele.insertBefore(newdate,ele.firstChild);
+      } else if(visible[visible.length-1] < dateint) {
+        visible.push(dateint);
+        ele.appendChild(newdate);
+      } else if(visible[0] === undefined) {
+        visible[0] = dateint;
+        ele.appendChild(newdate);
+      }
+      return false;
+    }
+    
     function init() {
       var cal = document.getElementById('cal');
-      cal.insertThisWeek();
-      cal.appendDay(42);
-      cal.prependDay(42);
-      window.scrollTo(0, 100);
       cal.calcalcinit();
       cal.addEventListener('calcalc', function(e) {
-        console.log(cal.getAttribute('data-newdate'));
+        var date = new Date(cal.getAttribute('data-newdate'))
+        visibleMonth(document.getElementById('scrollbox'),date);
       }, false);
+      cal.insertThisWeek();
+      
+      cal.appendDay(35);
+      cal.prependDay(35);
+      
     }
   </script>
 </head>
 <body onload="init();">
   <div class="topbar">
     <p onclick="scrollToDay(document.getElementsByClassName('today')[0]);">scroll to today</p>
+  </div>
+  <div id="scrollbox">
+    
   </div>
   <div id="cal">
   </div>

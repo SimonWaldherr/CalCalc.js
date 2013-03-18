@@ -1,6 +1,6 @@
 /* * * * * * * * *
  *  CalCalc .js  *
- * Version  0.04 *
+ * Version  0.05 *
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
@@ -44,6 +44,8 @@ Object.prototype.appendDay = function (quantity) {
   "use strict";
   var lastday   = (this.lastChild.hasAttribute('data-datestr')) ? this.lastChild.getAttribute('data-datestr').split('.') : this.lastChild.previousElementSibling.getAttribute('data-datestr').split('.'),
       i         = 0,
+      event = document.createEvent('Event'),
+      returnvalue = false,
       date, datestr, oddweek, oddmonth, newdiv, linebreak;
   quantity = (quantity === parseInt(quantity, 10)) ? quantity : 1;
   for(i = 0; i < quantity; i += 1) {
@@ -64,6 +66,11 @@ Object.prototype.appendDay = function (quantity) {
     }
     this.appendChild(newdiv);
   }
+  
+  this.setAttribute('data-newdate', date);
+  event.initEvent('calcalc',false,false);
+  event.target = this;
+  this.dispatchEvent(event);
   return date;
 };
 
@@ -71,6 +78,8 @@ Object.prototype.prependDay = function (quantity) {
   "use strict";
   var firstday   = (this.firstChild.hasAttribute('data-datestr')) ? this.firstChild.getAttribute('data-datestr').split('.') : this.firstChild.nextElementSibling.getAttribute('data-datestr').split('.'),
       i         = 0,
+      event = document.createEvent('Event'),
+      returnvalue = false,
       date, datestr, oddweek, oddmonth, newdiv, linebreak;
   quantity = (quantity === parseInt(quantity, 10)) ? quantity : 1;
   for(i = 0; i < quantity; i += 1) {
@@ -91,6 +100,11 @@ Object.prototype.prependDay = function (quantity) {
       this.insertBefore(linebreak,this.firstChild);
     }
   }
+  
+  this.setAttribute('data-newdate', date);
+  event.initEvent('calcalc',false,false);
+  event.target = this;
+  this.dispatchEvent(event);
   return date;
 };
 
@@ -99,6 +113,9 @@ var reloadOnScroll = function (ele) {
   var yPos = (document.documentElement) ? Math.max(document.body.scrollTop, document.documentElement.scrollTop) : document.body.scrollTop,
       height = (document.documentElement) ? Math.max(document.body.clientHeight, document.documentElement.clientHeight) : document.body.clientHeight,
       oldHeight, date = false;
+  if(document.body.getAttribute('data-scrolling') === 'true') {
+    return false;
+  }
   if(yPos < window.innerHeight/2) {
     oldHeight = height;
     date = ele.prependDay(28);
@@ -152,6 +169,7 @@ var scrollToDay = function (element) {
   var clientHeight = element.clientHeight,
       y = element.offsetTop,
       targetY, startY, startTime, startDist;
+  document.body.setAttribute('data-scrolling', 'true');
   while(element.offsetParent && element.offsetParent !== document.body) {
     element = element.offsetParent;
     y += element.offsetTop;
@@ -168,5 +186,6 @@ var scrollToDay = function (element) {
     } else if(startDist > 64) {
       setTimeout(scrollAnimation, 4, targetY, startY, startTime, 12);
     }
+    setTimeout("document.body.setAttribute('data-scrolling', 'false');", 1000);
   }
 };
