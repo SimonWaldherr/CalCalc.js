@@ -4,3 +4,35 @@
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
+
+#cal {
+  width: 840px;
+  margin: auto;
+}
+
+.calcalcday {
+  border: 1px solid #ccc;
+  border-right: 1px solid black;
+  border-bottom: 1px solid black;
+  padding: 3px 15px 20px 3px;
+  text-align: right;
+  vertical-align: top;
+  width: 120px;
+  height: 100px;
+  display: inline-block;
+}
+
+/*
+.oddweek1.oddmonth1 {
+  background: #ffe;
+}*/
+
+.oddmonth1 {
+  background: #eff;
+}
+
+.oddweek1 {
+  /*background: #ffe;
+  box-shadow: inset 0px 0px 25px 0px #000000;
+  -webkit-box-shadow: inset 0px 0px 25px 0px #000000;*/
+}
