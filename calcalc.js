@@ -8,15 +8,7 @@
 Object.prototype.TStoDate = function () {
   var timestamp = parseInt(this.valueOf(),10),
       date      = new Date(timestamp);
-  
   return [date.getDate(), date.getMonth()+1, date.getFullYear()];
-  
-  //console.log(this.valueOf());
-  //return parseInt(this.valueOf(),10)*2;
-}
-
-Object.prototype.prependDay = function () {
-  
 }
 
 Object.prototype.getWeekNumber = function () {
@@ -43,12 +35,9 @@ Element.prototype.insertThisWeek = function () {
       datestr  = date.getFullYear()+'.'+date.getMonth()+'.'+date.getDate(),
       oddweek  = date.getTime().getWeekNumber()%2,
       oddmonth = date.getMonth()%2;
-  //console.log(date.getDay());
   this.insertToday();
   this.prependDay(date.getDay());
   this.appendDay(6-date.getDay());
-
-  //this.innerHTML = '<div data-datestr="'+datestr+'" class="calcalcday day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth+'" id="'+date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()+'"><span>'+date.getDate()+'</span></div>';
 }
 
 Element.prototype.appendDay = function (quantity) {
@@ -63,7 +52,6 @@ Element.prototype.appendDay = function (quantity) {
       newdiv    = document.createElement('div'),
       quantity  = (quantity === parseInt(quantity, 10)) ? quantity : 1,
       i         = 0;
-  
   for(i = 0; i < quantity; i++) {
     date      = new Date(parseInt(lastday[0],10),parseInt(lastday[1],10),parseInt(lastday[2],10));
     date.setDate(parseInt(lastday[2],10)+(i+1));
@@ -75,7 +63,6 @@ Element.prototype.appendDay = function (quantity) {
     newdiv.className = 'calcalcday day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth;
     newdiv.id = date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear();
     newdiv.innerHTML = '<span>'+date.getDate()+'</span>';
-    
     this.appendChild(newdiv);
   }
 }
@@ -92,11 +79,9 @@ Element.prototype.prependDay = function (quantity) {
       newdiv    = document.createElement('div'),
       quantity  = (quantity === parseInt(quantity, 10)) ? quantity : 1,
       i         = 0;
-
   for(i = 0; i < quantity; i++) {
     date      = new Date(parseInt(lastday[0],10),parseInt(lastday[1],10),parseInt(lastday[2],10));
     date.setDate(parseInt(lastday[2],10)-(i+1));
-    
     datestr   = date.getFullYear()+'.'+date.getMonth()+'.'+date.getDate();
     oddweek   = date.getTime().getWeekNumber()%2;
     oddmonth  = date.getMonth()%2;
@@ -105,25 +90,6 @@ Element.prototype.prependDay = function (quantity) {
     newdiv.className = 'calcalcday day'+date.getDay()+' oddweek'+oddweek+' oddmonth'+oddmonth;
     newdiv.id = date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear();
     newdiv.innerHTML = '<span>'+date.getDate()+'</span>';
-
     this.insertBefore(newdiv,this.firstChild);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
