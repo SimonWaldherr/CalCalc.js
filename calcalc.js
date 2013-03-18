@@ -1,6 +1,6 @@
 /* * * * * * * * *
  *  CalCalc .js  *
- * Version  0.03 *
+ * Version  0.04 *
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
@@ -90,6 +90,30 @@ Object.prototype.prependDay = function (quantity) {
       this.insertBefore(linebreak,this.firstChild);
     }
   }
+};
+
+var reloadOnScroll = function (ele) {
+  "use strict";
+  var yPos = (document.documentElement) ? Math.max(document.body.scrollTop, document.documentElement.scrollTop) : document.body.scrollTop,
+      height = (document.documentElement) ? Math.max(document.body.clientHeight, document.documentElement.clientHeight) : document.body.clientHeight,
+      oldHeight;
+  if(yPos < 200) {
+    oldHeight = height;
+    ele.prependDay(56);
+    height = (document.documentElement) ? Math.max(document.body.clientHeight, document.documentElement.clientHeight) : document.body.clientHeight;
+    window.scrollBy(0, height - oldHeight);
+  }
+  if(yPos > height - window.innerHeight - 200) {
+    ele.appendDay(56);
+  }
+};
+
+Object.prototype.calcalcinit = function () {
+  "use strict";
+  var ele = this;
+  window.onscroll = function () {
+    reloadOnScroll(ele);
+  };
 };
 
 var curve = function (x) {
