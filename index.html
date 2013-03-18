@@ -8,12 +8,15 @@
     function init() {
       var cal = document.getElementById('cal');
       cal.insertThisWeek();
-      cal.appendDay(28);
-      cal.prependDay(28);
+      cal.appendDay(42);
+      cal.prependDay(42);
     }
   </script>
 </head>
 <body onload="init();">
+  <div class="topbar">
+    <p onclick="scrollToDay(document.getElementsByClassName('today')[0]);">scroll to today</p>
+  </div>
   <div id="cal">
   </div>
 </body>
