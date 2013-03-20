@@ -20,6 +20,7 @@
   right: 0px;
   bottom: 0px;
   overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }
 
 .topbar {

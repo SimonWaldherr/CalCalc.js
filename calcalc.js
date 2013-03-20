@@ -63,8 +63,8 @@ Object.prototype.insertThisWeek = function () {
   "use strict";
   var date = new Date();
   this.insertToday();
-  this.prependDay(date.getDay());
-  this.appendDay(6 - date.getDay());
+  this.prependDay(date.getDay() - 1);
+  this.appendDay(7 - date.getDay());
 };
 
 Object.prototype.appendDay = function (quantity) {
@@ -160,13 +160,13 @@ var reloadOnScroll = function (ele) {
   }
   if (yPos < (ele.parentNode.clientHeight / 2)) {
     oldHeight = height;
-    date = ele.prependDay(28);
+    date = ele.prependDay(42);
     height = ele.clientHeight;
     ele.parentNode.scrollTop = (yPos + height - oldHeight);
     return date;
   }
   if (yPos > height - ele.parentNode.clientHeight - (ele.parentNode.clientHeight / 2)) {
-    date = ele.appendDay(28);
+    date = ele.appendDay(42);
     return date;
   }
   return false;
