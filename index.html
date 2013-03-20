@@ -40,9 +40,10 @@
       }, false);
       cal.insertThisWeek();
       
-      cal.appendDay(35);
-      cal.prependDay(35);
-      
+      cal.appendDay(42);
+      cal.prependDay(42);
+      setTimeout("scrollToDay(document.getElementsByClassName('today')[0], 0)", 80);
+      setTimeout("document.body.setAttribute('data-scrolling', 'false');", 400);
     }
   </script>
 </head>
@@ -53,7 +54,6 @@
   <div id="scrollbox">
     
   </div>
-  <div id="cal">
-  </div>
+  <div id="container"><table id="cal"></table></div>
 </body>
 </html>

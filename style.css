@@ -1,6 +1,6 @@
 /* * * * * * * * *
  *  CalCalc .js  *
- * Version  0.06 *
+ * Version  0.07 *
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
@@ -9,8 +9,17 @@
   position: relative;
   z-index: 1;
   top: 50px;
-  width: 980px;
+  width: 100%;
   margin: auto;
+}
+
+#container {
+  position: absolute;
+  top: 20px;
+  left: 160px;
+  right: 0px;
+  bottom: 0px;
+  overflow-y: scroll;
 }
 
 .topbar {
@@ -39,7 +48,6 @@
   vertical-align: top;
   width: 120px;
   height: 100px;
-  display: inline-block;
 }
 
 .oddmonth1 {
@@ -71,4 +79,8 @@
 }
 #scrollbox p:last-child {
   visibility: hidden;
+}
+
+table {
+  border-spacing: 0px;
 }
