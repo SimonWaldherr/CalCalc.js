@@ -23,6 +23,16 @@
   -webkit-overflow-scrolling: touch;
 }
 
+.container {
+  position: absolute;
+  top: 20px;
+  left: 160px;
+  right: 0px;
+  bottom: 0px;
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+}
+
 .topbar {
   position: fixed;
   text-align: center;
