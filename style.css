@@ -106,3 +106,16 @@
 table {
   border-spacing: 0px;
 }
+
+table tr td div {
+  position: relative;
+  top: 10px;
+  left: 5px;
+  font-family: Helvetica Neue;
+  font-size: 12px;
+  text-align: left;
+  background: #cef;
+  border-radius: 5px;
+  margin: 2px;
+  padding: 2px;
+}

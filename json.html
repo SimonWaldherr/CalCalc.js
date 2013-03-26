@@ -1,0 +1,98 @@
+<!DOCTYPE html><html>
+<head>
+  <meta charset="utf-8">
+  <title>CalCalc.js JSON</title>
+  <link href="style.css" rel="stylesheet" type="text/css">
+  <script src="calcalc.js" type="text/javascript"></script>
+  <script>
+    var visible = [];
+    function visibleMonth(ele, date) {
+      var i = 0, month, year, datestr, newdate, first, dateint, scrollbox = '',
+      monthstr = (date.getMonth() < 10) ? '0'+date.getMonth() : date.getMonth();
+      monthstrarray = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      
+      dateint = parseInt(date.getFullYear().toString()+monthstr,10);
+      
+      newdate = document.createElement('p');
+      newdate.className = 'scrollmonth';
+      newdate.onclick = function() {scrollToDay(document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()));};
+      newdate.innerHTML = monthstrarray[date.getMonth()]+'. '+date.getFullYear();
+      
+      if(visible[0] > dateint){
+        visible.unshift(dateint);
+        ele.insertBefore(newdate,ele.firstChild);
+      } else if(visible[visible.length-1] < dateint) {
+        visible.push(dateint);
+        ele.appendChild(newdate);
+      } else if(visible[0] === undefined) {
+        visible[0] = dateint;
+        ele.appendChild(newdate);
+      }
+      return false;
+    }
+    
+    function init() {
+      var cal = document.getElementById('cal');
+      cal.calcalcinit();
+      cal.addEventListener('calcalc', function(e) {
+        var date = new Date(cal.getAttribute('data-newdate'))
+        visibleMonth(document.getElementById('scrollbox'),date);
+      }, false);
+      cal.insertThisWeek();
+      
+      cal.appendDay(42);
+      cal.prependDay(42);
+      insertEventsViaJSON();
+      setTimeout("scrollToDay(document.getElementsByClassName('today')[0], 0)", 80);
+      setTimeout("document.body.setAttribute('data-scrolling', 'false');", 400);
+    }
+    
+    function insertEventsViaJSON() {
+      var i, id, date, status, string, ele, datedata = new Date (),
+          eventJSON = [{'id': 0,'date':datedata.getTime()-60*60*25*1000,'status':'added','string':'Sollicitudin Parturient'}, 
+                       {'id': 1,'date':datedata.getTime(),'status':'added','string':'lorem ipsum'}, 
+                       {'id': 2,'date':datedata.getTime()+60*60*24*10*100,'status':'added','string':'Vehicula Cras Nibh'},
+                       {'id': 3,'date':datedata.getTime()+62*60*24*10*100,'status':'added','string':'Venenatis Vulputate'},
+                       {'id': 4,'date':datedata.getTime()+60*60*24*30*120,'status':'added','string':'lorem dolar'},
+                       {'id': 5,'date':datedata.getTime()+60*60*24*10*200,'status':'added','string':'Vehicula Pharetra'},
+                       {'id': 6,'date':datedata.getTime()+60*60*24*10*300,'status':'added','string':'Purus Ligula Sem'},
+                       {'id': 7,'date':datedata.getTime()+60*60*24*10*400,'status':'added','string':'Adipiscing Ullamcorper'},
+                       {'id': 8,'date':datedata.getTime()+60*60*24*10*500,'status':'added','string':'Fermentum Euismod Ipsum'},
+                       {'id': 9,'date':datedata.getTime()+60*60*24*10*600,'status':'added','string':'Egestas Euismod'},
+                       {'id':10,'date':datedata.getTime()+60*60*24*10*330,'status':'added','string':'Nibh Elit Vehicula'},
+                       {'id':11,'date':datedata.getTime()+60*60*24*10*333,'status':'added','string':'Nullam Ullamcorper Dolor'},
+                       {'id':12,'date':datedata.getTime()+60*60*24*10*444,'status':'added','string':'Magna Cras Pharetra'},
+                       {'id':13,'date':datedata.getTime()+60*60*24*10*111,'status':'added','string':'Magna Vestibulum Lorem'},
+                       {'id':14,'date':datedata.getTime()+60*60*24*10*321,'status':'added','string':'Egestas Dapibus Purus'},
+                       {'id':15,'date':datedata.getTime()+60*60*24*10*123,'status':'added','string':'Vehicula Egestas Tellus'},
+                       {'id':16,'date':datedata.getTime()+60*60*26*10*200,'status':'added','string':'Mollis Etiam Ullamcorper'},
+                       {'id':17,'date':datedata.getTime()+60*60*28*10*200,'status':'added','string':'Quam Fermentum'}];
+      for(i=0;i<eventJSON.length;i+=1) {
+        id     = eventJSON[i].id;
+        date   = new Date(eventJSON[i].date);
+        status = eventJSON[i].status;
+        string = eventJSON[i].string;
+        
+        ele = document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear());
+        if('status' !== 'deleted') {
+          ele.innerHTML += '<div>'+string+'</div>';
+        }
+      }
+    }
+  </script>
+</head>
+<body onload="init();">
+  <div class="topbar">
+    <p onclick="scrollToDay(document.getElementsByClassName('today')[0]);">scroll to today</p>
+  </div>
+  <div id="scrollbox">
+    
+  </div>
+  <div id="container" class="container"><table id="cal"></table></div>
+  <div class="footer">
+    <a href="./multiple.html">switch to multiple calendars demo</a>
+    -
+    <a href="./index.html">switch to single calendar demo</a>
+  </div>
+</body>
+</html>
