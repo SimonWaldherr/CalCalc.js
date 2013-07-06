@@ -15,7 +15,7 @@
       
       newdate = document.createElement('p');
       newdate.className = 'scrollmonth';
-      newdate.onclick = function() {scrollToDay(document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()));};
+      newdate.onclick = function() {calcalc.scrollToDay(document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()));};
       newdate.innerHTML = monthstrarray[date.getMonth()]+'. '+date.getFullYear();
       
       if(visible[0] > dateint){
@@ -43,9 +43,9 @@
       cal.appendDay(42);
       cal.prependDay(42);
       if(calid === 'cal1') {
-        setTimeout("scrollToDay(document.getElementsByClassName('today')[0], 0)", 80);
+        setTimeout("calcalc.scrollToDay(document.getElementsByClassName('today')[0], 0)", 80);
       } else {
-        setTimeout("scrollToDay(document.getElementsByClassName('today')[1], 0)", 80);
+        setTimeout("calcalc.scrollToDay(document.getElementsByClassName('today')[1], 0)", 80);
       }
       
       setTimeout("document.body.setAttribute('data-scrolling', 'false');", 400);
@@ -64,7 +64,7 @@
 </head>
 <body onload="init('cal1');init('cal2');">
   <div class="topbar">
-    <p onclick="scrollToDay(document.getElementsByClassName('today')[0]);scrollToDay(document.getElementsByClassName('today')[1]);">scroll to today</p>
+    <p onclick="calcalc.scrollToDay(document.getElementsByClassName('today')[0]);calcalc.scrollToDay(document.getElementsByClassName('today')[1]);">scroll to today</p>
   </div>
   <div id="container1" class="container"><table id="cal1"></table></div>
   <div id="container2" class="container"><table id="cal2"></table></div>

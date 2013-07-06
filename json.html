@@ -15,7 +15,7 @@
       
       newdate = document.createElement('p');
       newdate.className = 'scrollmonth';
-      newdate.onclick = function() {scrollToDay(document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()));};
+      newdate.onclick = function() {calcalc.scrollToDay(document.getElementById(date.getDate()+'_'+date.getMonth()+'_'+date.getFullYear()));};
       newdate.innerHTML = monthstrarray[date.getMonth()]+'. '+date.getFullYear();
       
       if(visible[0] > dateint){
@@ -43,7 +43,7 @@
       cal.appendDay(42);
       cal.prependDay(42);
       insertEventsViaJSON();
-      setTimeout("scrollToDay(document.getElementsByClassName('today')[0], 0)", 80);
+      setTimeout("calcalc.scrollToDay(document.getElementsByClassName('today')[0], 0)", 80);
       setTimeout("document.body.setAttribute('data-scrolling', 'false');", 400);
     }
     
@@ -83,7 +83,7 @@
 </head>
 <body onload="init();">
   <div class="topbar">
-    <p onclick="scrollToDay(document.getElementsByClassName('today')[0]);">scroll to today</p>
+    <p onclick="calcalc.scrollToDay(document.getElementsByClassName('today')[0]);">scroll to today</p>
   </div>
   <div id="scrollbox">
     
