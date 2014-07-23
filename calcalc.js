@@ -4,15 +4,13 @@
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
-
 /*jslint browser: true, indent: 2 */
-
 var calcalc = {
-  curve : function (x) {
+  curve: function (x) {
     "use strict";
     return (x < 0.5) ? (4 * x * x * x) : (1 - 4 * (1 - x) * (1 - x) * (1 - x));
   },
-  scrollAnimation : function (element, targetY, startY, startTime, speed) {
+  scrollAnimation: function (element, targetY, startY, startTime, speed) {
     "use strict";
     var percent = (new Date() - startTime) / 1000 * speed;
 
@@ -23,7 +21,7 @@ var calcalc = {
       setTimeout(calcalc.scrollAnimation, 10, element, targetY, startY, startTime, speed);
     }
   },
-  scrollToDay : function (element, preventNewDays) {
+  scrollToDay: function (element, preventNewDays) {
     "use strict";
     var clientHeight = element.clientHeight,
       y = element.offsetTop,
@@ -55,7 +53,7 @@ var calcalc = {
       setTimeout(calcalc.setAttr, 1000, 'data-scrolling', 'false');
     }
   },
-  getWeekNumber : function (int) {
+  getWeekNumber: function (int) {
     "use strict";
     var date = new Date(parseInt(int, 10)),
       yearStart,
@@ -67,11 +65,11 @@ var calcalc = {
     weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
     return [weekNumber, date.getFullYear()];
   },
-  setAttr : function (attr, val) {
+  setAttr: function (attr, val) {
     "use strict";
     document.body.setAttribute(attr, val);
   },
-  target : null
+  target: null
 };
 
 Object.prototype.TStoDate = function () {
@@ -288,4 +286,3 @@ Object.prototype.calcalcinit = function () {
     }
   };
 };
-

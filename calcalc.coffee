@@ -18,6 +18,7 @@ calcalc =
     else
       element.scrollTop = Math.round(startY + (targetY - startY) * calcalc.curve(percent))
       setTimeout calcalc.scrollAnimation, 10, element, targetY, startY, startTime, speed
+    return
 
   scrollToDay: (element, preventNewDays) ->
     "use strict"
@@ -42,6 +43,7 @@ calcalc =
         setTimeout calcalc.scrollAnimation, 6, element, targetY, startY, startTime, 6
       else setTimeout calcalc.scrollAnimation, 4, element, targetY, startY, startTime, 12  if startDist > 64
       setTimeout calcalc.setAttr, 1000, "data-scrolling", "false"
+    return
 
   getWeekNumber: (int) ->
     "use strict"
@@ -52,11 +54,15 @@ calcalc =
     date.setDate date.getDate() + 4 - (date.getDay() or 7)
     yearStart = new Date(date.getFullYear(), 0, 1)
     weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7)
-    [weekNumber, date.getFullYear()]
+    [
+      weekNumber
+      date.getFullYear()
+    ]
 
   setAttr: (attr, val) ->
     "use strict"
     document.body.setAttribute attr, val
+    return
 
   target: null
 
@@ -64,7 +70,11 @@ Object::TStoDate = ->
   "use strict"
   timestamp = parseInt(@valueOf(), 10)
   date = new Date(timestamp)
-  [date.getDate(), date.getMonth() + 1, date.getFullYear()]
+  [
+    date.getDate()
+    date.getMonth() + 1
+    date.getFullYear()
+  ]
 
 Object::getWeekNumber = (int) ->
   "use strict"
@@ -75,7 +85,10 @@ Object::getWeekNumber = (int) ->
   date.setDate date.getDate() + 4 - (date.getDay() or 7)
   yearStart = new Date(date.getFullYear(), 0, 1)
   weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7)
-  [weekNumber, date.getFullYear()]
+  [
+    weekNumber
+    date.getFullYear()
+  ]
 
 Object::insertToday = ->
   "use strict"
@@ -120,6 +133,7 @@ Object::insertThisWeek = ->
   @insertToday()
   @prependDay date.getDay() - 1
   @appendDay 7 - date.getDay()
+  return
 
 Object::appendDay = (quantity) ->
   "use strict"
@@ -247,3 +261,6 @@ Object::calcalcinit = ->
         calcalc.target = event.srcElement or event.target
         calcalc.target = ele
         ele.dispatchEvent event
+    return
+
+  return
