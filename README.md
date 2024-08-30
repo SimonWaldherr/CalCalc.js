@@ -7,7 +7,7 @@ JavaScript functions to calculate calendars
 MIT
 
 ## Version
-0.08
+0.10
 
 ## Demo
-http://simonwaldherr.github.com/CalCalc.js/
+[https://simonwaldherr.github.io/CalCalc.js/](https://simonwaldherr.github.io/CalCalc.js/)
