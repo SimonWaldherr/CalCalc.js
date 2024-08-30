@@ -1,288 +1,262 @@
 /* * * * * * * * *
- *  CalCalc .js  *
- * Version  0.08 *
+ *  CalCalc.js   *
+ * Version  0.10 *
  * License:  MIT *
  * SimonWaldherr *
  * * * * * * * * */
+
 /*jslint browser: true, indent: 2 */
+"use strict";
+
+// Define the calcalc object with various methods
 var calcalc = {
+  // Function to compute a smooth scroll curve
   curve: function (x) {
-    "use strict";
     return (x < 0.5) ? (4 * x * x * x) : (1 - 4 * (1 - x) * (1 - x) * (1 - x));
   },
+
+  // Function to animate scrolling to a target position
   scrollAnimation: function (element, targetY, startY, startTime, speed) {
-    "use strict";
-    var percent = (new Date() - startTime) / 1000 * speed;
+    var percent = ((new Date()) - startTime) / 1000 * speed;
 
     if (percent > 1) {
       element.scrollTop = targetY;
     } else {
       element.scrollTop = Math.round(startY + (targetY - startY) * calcalc.curve(percent));
-      setTimeout(calcalc.scrollAnimation, 10, element, targetY, startY, startTime, speed);
+      setTimeout(function () {
+        calcalc.scrollAnimation(element, targetY, startY, startTime, speed);
+      }, 10);
     }
   },
+
+  // Function to scroll to a specific day element
   scrollToDay: function (element, preventNewDays) {
-    "use strict";
-    var clientHeight = element.clientHeight,
-      y = element.offsetTop,
-      targetY,
-      startY,
-      startTime,
-      startDist;
+    var clientHeight = element.clientHeight;
+    var y = element.offsetTop;
+    var targetY, startY, startTime, startDist;
 
     if (!preventNewDays) {
       document.body.setAttribute('data-scrolling', 'true');
     }
+
+    // Calculate the total vertical offset of the element
     while (element.offsetParent && element.offsetParent !== document.body) {
       element = element.offsetParent;
       y += element.offsetTop;
     }
+
+    // Center the target element in the viewport
     targetY = y - (window.innerHeight - clientHeight) / 2;
     startY = element.scrollTop;
     startTime = new Date();
 
     if (targetY !== startY) {
-      startDist = Math.max(targetY, startY) - Math.min(targetY, startY);
-      if (startDist > 512) {
-        setTimeout(calcalc.scrollAnimation, 10, element, targetY, startY, startTime, 2);
-      } else if (startDist > 256) {
-        setTimeout(calcalc.scrollAnimation, 6, element, targetY, startY, startTime, 6);
-      } else if (startDist > 64) {
-        setTimeout(calcalc.scrollAnimation, 4, element, targetY, startY, startTime, 12);
-      }
-      setTimeout(calcalc.setAttr, 1000, 'data-scrolling', 'false');
+      startDist = Math.abs(targetY - startY);
+      var speed = startDist > 512 ? 2 : startDist > 256 ? 6 : 12;
+      setTimeout(function () {
+        calcalc.scrollAnimation(element, targetY, startY, startTime, speed);
+      }, 10);
+
+      // Set the scrolling attribute to false after a delay
+      setTimeout(function () {
+        calcalc.setAttr('data-scrolling', 'false');
+      }, 1000);
     }
   },
-  getWeekNumber: function (int) {
-    "use strict";
-    var date = new Date(parseInt(int, 10)),
-      yearStart,
-      weekNumber;
 
+  // Function to get the week number and year from a timestamp
+  getWeekNumber: function (int) {
+    var date = new Date(parseInt(int, 10));
     date.setHours(0, 0, 0);
     date.setDate(date.getDate() + 4 - (date.getDay() || 7));
-    yearStart = new Date(date.getFullYear(), 0, 1);
-    weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+    var yearStart = new Date(date.getFullYear(), 0, 1);
+    var weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
     return [weekNumber, date.getFullYear()];
   },
+
+  // Function to set an attribute on the document body
   setAttr: function (attr, val) {
-    "use strict";
     document.body.setAttribute(attr, val);
   },
+
+  // Placeholder for target element
   target: null
 };
 
+// Add date handling methods to Object prototype
 Object.prototype.TStoDate = function () {
-  "use strict";
-  var timestamp = parseInt(this.valueOf(), 10),
-    date = new Date(timestamp);
-
+  var timestamp = parseInt(this.valueOf(), 10);
+  var date = new Date(timestamp);
   return [date.getDate(), date.getMonth() + 1, date.getFullYear()];
 };
 
 Object.prototype.getWeekNumber = function (int) {
-  "use strict";
-  var date = new Date(parseInt((int !== '') ? int : this.valueOf(), 10)),
-    yearStart,
-    weekNumber;
-
+  var date = new Date(parseInt(int || this.valueOf(), 10));
   date.setHours(0, 0, 0);
   date.setDate(date.getDate() + 4 - (date.getDay() || 7));
-  yearStart = new Date(date.getFullYear(), 0, 1);
-  weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
+  var yearStart = new Date(date.getFullYear(), 0, 1);
+  var weekNumber = Math.ceil((((date - yearStart) / 86400000) + 1) / 7);
   return [weekNumber, date.getFullYear()];
 };
 
 Object.prototype.insertToday = function () {
-  "use strict";
-  var event = document.createEvent('Event'),
-    date,
-    weeknumber,
-    weekcont,
-    datestr,
-    oddweek,
-    oddmonth,
-    newdiv;
+  var event = new Event('calcalc');
+  var date = new Date();
+  var weekNumber = calcalc.getWeekNumber(date.getTime());
+  var datestr = date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate();
+  var oddweek = weekNumber[0] % 2;
+  var oddmonth = date.getMonth() % 2;
 
-  date = new Date();
-  datestr = date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate();
-  oddweek = date.getTime().getWeekNumber()[0] % 2;
-  oddmonth = date.getMonth() % 2;
-  newdiv = document.createElement('td');
+  var newdiv = document.createElement('td');
   newdiv.setAttribute('data-datestr', datestr);
   newdiv.className = 'today calcalcday day' + date.getDay() + ' oddweek' + oddweek + ' oddmonth' + oddmonth;
   newdiv.id = date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear();
   newdiv.innerHTML = '<span>' + date.getDate() + '</span>';
-  weeknumber = calcalc.getWeekNumber(date.getTime());
-  if (this.getElementsByClassName('kw' + weeknumber[0] + '_' + weeknumber[1])[0] === undefined) {
-    weekcont = document.createElement('tr');
-    weekcont.className = 'kw' + weeknumber[0] + '_' + weeknumber[1] + ' weektr';
-    this.appendChild(weekcont);
+
+  // Find or create the week container for the new day
+  var weekCont = this.querySelector('.kw' + weekNumber[0] + '_' + weekNumber[1]);
+  if (!weekCont) {
+    weekCont = document.createElement('tr');
+    weekCont.className = 'kw' + weekNumber[0] + '_' + weekNumber[1] + ' weektr';
+    this.appendChild(weekCont);
   }
-  this.getElementsByClassName('kw' + weeknumber[0] + '_' + weeknumber[1])[0].appendChild(newdiv);
+  weekCont.appendChild(newdiv);
+
+  // Set the new date attribute
   this.setAttribute('data-newdate', date);
-  if (!event) {
-    event.initEvent('calcalc', false, false);
-    event.target = this;
-    this.dispatchEvent(event);
-  } else {
-    event.initEvent('calcalc', false, false);
-    calcalc.target = event.srcElement || event.target;
-    calcalc.target = this;
-    this.dispatchEvent(event);
-  }
+
+  // Dispatch a 'calcalc' event
+  this.dispatchEvent(event);
+
   return date;
 };
 
 Object.prototype.insertThisWeek = function () {
-  "use strict";
   var date = new Date();
-
   this.insertToday();
   this.prependDay(date.getDay() - 1);
   this.appendDay(7 - date.getDay());
 };
 
 Object.prototype.appendDay = function (quantity) {
-  "use strict";
-  var lastday = (this.lastChild.lastChild.hasAttribute('data-datestr')) ? this.lastChild.lastChild.getAttribute('data-datestr').split('.') : this.lastChild.lastChild.previousElementSibling.getAttribute('data-datestr').split('.'),
-    i = 0,
-    event = document.createEvent('Event'),
-    date,
-    weeknumber,
-    weekcont,
-    datestr,
-    oddweek,
-    oddmonth,
-    newdiv;
+  quantity = quantity || 1;
 
-  quantity = (quantity === parseInt(quantity, 10)) ? quantity : 1;
-  for (i = 0; i < quantity; i += 1) {
-    date = new Date(parseInt(lastday[0], 10), parseInt(lastday[1], 10), parseInt(lastday[2], 10));
+  var lastday = this.lastChild.lastChild.hasAttribute('data-datestr') ?
+    this.lastChild.lastChild.getAttribute('data-datestr').split('.') :
+    this.lastChild.lastChild.previousElementSibling.getAttribute('data-datestr').split('.');
+
+  var event = new Event('calcalc');
+
+  for (var i = 0; i < quantity; i++) {
+    var date = new Date(parseInt(lastday[0], 10), parseInt(lastday[1], 10), parseInt(lastday[2], 10));
     date.setDate(parseInt(lastday[2], 10) + (i + 1));
-    datestr = date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate();
-    oddweek = date.getTime().getWeekNumber()[0] % 2;
-    oddmonth = date.getMonth() % 2;
-    newdiv = document.createElement('td');
+
+    var datestr = date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate();
+    var weekNumber = calcalc.getWeekNumber(date.getTime());
+    var oddweek = weekNumber[0] % 2;
+    var oddmonth = date.getMonth() % 2;
+
+    var newdiv = document.createElement('td');
     newdiv.setAttribute('data-datestr', datestr);
     newdiv.className = 'calcalcday day' + date.getDay() + ' oddweek' + oddweek + ' oddmonth' + oddmonth;
     newdiv.id = date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear();
     newdiv.innerHTML = '<span>' + date.getDate() + '</span>';
-    weeknumber = calcalc.getWeekNumber(date.getTime());
-    if (this.getElementsByClassName('kw' + weeknumber[0] + '_' + weeknumber[1])[0] === undefined) {
-      weekcont = document.createElement('tr');
-      weekcont.className = 'kw' + weeknumber[0] + '_' + weeknumber[1] + ' weektr';
-      this.appendChild(weekcont);
+
+    var weekCont = this.querySelector('.kw' + weekNumber[0] + '_' + weekNumber[1]);
+    if (!weekCont) {
+      weekCont = document.createElement('tr');
+      weekCont.className = 'kw' + weekNumber[0] + '_' + weekNumber[1] + ' weektr';
+      this.appendChild(weekCont);
     }
-    this.getElementsByClassName('kw' + weeknumber[0] + '_' + weeknumber[1])[0].appendChild(newdiv);
+    weekCont.appendChild(newdiv);
   }
+
   this.setAttribute('data-newdate', date);
-  if (!event) {
-    event.initEvent('calcalc', false, false);
-    event.target = this;
-    this.dispatchEvent(event);
-  } else {
-    event.initEvent('calcalc', false, false);
-    calcalc.target = event.srcElement || event.target;
-    calcalc.target = this;
-    this.dispatchEvent(event);
-  }
+
+  event.initEvent('calcalc', false, false); // Deprecated, but kept for compatibility
+  this.dispatchEvent(event);
+
   return date;
 };
 
 Object.prototype.prependDay = function (quantity) {
-  "use strict";
-  var firstday = (this.firstChild.firstChild.hasAttribute('data-datestr')) ? this.firstChild.firstChild.getAttribute('data-datestr').split('.') : this.firstChild.firstChild.nextElementSibling.getAttribute('data-datestr').split('.'),
-    i = 0,
-    event = document.createEvent('Event'),
-    date,
-    weeknumber,
-    weekcont,
-    weekelement,
-    datestr,
-    oddweek,
-    oddmonth,
-    newdiv;
+  quantity = quantity || 1;
 
-  quantity = (quantity === parseInt(quantity, 10)) ? quantity : 1;
-  for (i = 0; i < quantity; i += 1) {
-    date = new Date(parseInt(firstday[0], 10), parseInt(firstday[1], 10), parseInt(firstday[2], 10));
+  var firstday = this.firstChild.firstChild.hasAttribute('data-datestr') ?
+    this.firstChild.firstChild.getAttribute('data-datestr').split('.') :
+    this.firstChild.firstChild.nextElementSibling.getAttribute('data-datestr').split('.');
+
+  var event = new Event('calcalc');
+
+  for (var i = 0; i < quantity; i++) {
+    var date = new Date(parseInt(firstday[0], 10), parseInt(firstday[1], 10), parseInt(firstday[2], 10));
     date.setDate(parseInt(firstday[2], 10) - (i + 1));
-    datestr = date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate();
-    oddweek = date.getTime().getWeekNumber()[0] % 2;
-    oddmonth = date.getMonth() % 2;
-    newdiv = document.createElement('td');
+
+    var datestr = date.getFullYear() + '.' + date.getMonth() + '.' + date.getDate();
+    var weekNumber = calcalc.getWeekNumber(date.getTime());
+    var oddweek = weekNumber[0] % 2;
+    var oddmonth = date.getMonth() % 2;
+
+    var newdiv = document.createElement('td');
     newdiv.setAttribute('data-datestr', datestr);
     newdiv.className = 'calcalcday day' + date.getDay() + ' oddweek' + oddweek + ' oddmonth' + oddmonth;
     newdiv.id = date.getDate() + '_' + date.getMonth() + '_' + date.getFullYear();
     newdiv.innerHTML = '<span>' + date.getDate() + '</span>';
-    weeknumber = calcalc.getWeekNumber(date.getTime());
-    if (this.getElementsByClassName('kw' + weeknumber[0] + '_' + weeknumber[1])[0] === undefined) {
-      weekcont = document.createElement('tr');
-      weekcont.className = 'kw' + weeknumber[0] + '_' + weeknumber[1] + ' weektr';
-      this.insertBefore(weekcont, this.firstChild);
+
+    var weekCont = this.querySelector('.kw' + weekNumber[0] + '_' + weekNumber[1]);
+    if (!weekCont) {
+      weekCont = document.createElement('tr');
+      weekCont.className = 'kw' + weekNumber[0] + '_' + weekNumber[1] + ' weektr';
+      this.insertBefore(weekCont, this.firstChild);
     }
-    weekelement = this.getElementsByClassName('kw' + weeknumber[0] + '_' + weeknumber[1])[0];
-    weekelement.insertBefore(newdiv, weekelement.firstChild);
+    weekCont.insertBefore(newdiv, weekCont.firstChild);
   }
+
   this.setAttribute('data-newdate', date);
-  if (!event) {
-    event.initEvent('calcalc', false, false);
-    event.target = this;
-    this.dispatchEvent(event);
-  } else {
-    event.initEvent('calcalc', false, false);
-    calcalc.target = event.srcElement || event.target;
-    calcalc.target = this;
-    this.dispatchEvent(event);
-  }
+
+  event.initEvent('calcalc', false, false); // Deprecated, but kept for compatibility
+  this.dispatchEvent(event);
+
   return date;
 };
 
+// Function to handle content reloading on scroll
 var reloadOnScroll = function (ele) {
-  "use strict";
-  var yPos = ele.parentNode.scrollTop,
-    height = ele.clientHeight,
-    oldHeight,
-    date = false;
+  var yPos = ele.parentNode.scrollTop;
+  var height = ele.clientHeight;
+  var date = false;
 
   if (document.body.getAttribute('data-scrolling') === 'true') {
     return false;
   }
-  if (yPos < (ele.parentNode.clientHeight / 2)) {
-    oldHeight = height;
+
+  // Check if we need to prepend days
+  if (yPos < ele.parentNode.clientHeight / 2) {
     date = ele.prependDay(42);
-    height = ele.clientHeight;
-    ele.parentNode.scrollTop = (yPos + height - oldHeight);
+    ele.parentNode.scrollTop = yPos + ele.clientHeight - height;
     return date;
   }
-  if (yPos > height - ele.parentNode.clientHeight - (ele.parentNode.clientHeight / 2)) {
+
+  // Check if we need to append days
+  if (yPos > height - ele.parentNode.clientHeight - ele.parentNode.clientHeight / 2) {
     date = ele.appendDay(42);
     return date;
   }
+
   return false;
 };
 
+// Initialize scroll event for calendar
 Object.prototype.calcalcinit = function () {
-  "use strict";
   var ele = this;
 
   ele.parentNode.onscroll = function () {
-    var event = document.createEvent('Event'),
-      returnvalue = false;
-    returnvalue = reloadOnScroll(ele);
-    if (returnvalue !== false) {
-      ele.setAttribute('data-newdate', returnvalue);
-      if (!event) {
-        event.initEvent('calcalc', false, false);
-        event.target = ele;
-        ele.dispatchEvent(event);
-      } else {
-        event.initEvent('calcalc', false, false);
-        calcalc.target = event.srcElement || event.target;
-        calcalc.target = ele;
-        ele.dispatchEvent(event);
-      }
+    var returnValue = reloadOnScroll(ele);
+
+    if (returnValue !== false) {
+      ele.setAttribute('data-newdate', returnValue);
+      var event = new Event('calcalc');
+      ele.dispatchEvent(event);
     }
   };
 };
